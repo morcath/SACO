@@ -1,12 +1,16 @@
 package wmh.project;
 
 
+import javafx.util.Pair;
+
 import java.util.Random;
 
 public class SudokuBoard
 {
     private int[][] inputBoard;
     private boolean[][] mask = new boolean[9][9];
+    private Pair<Integer, Integer> forbiddenFields;
+    private Pair<Integer, Integer> allowedFields;
     private int[] startNumbers = {0,0,0,0,0,0,0,0,0};
     private int[][] firstBoard = new int[9][9];
     private SudokuLevel level;
@@ -41,6 +45,10 @@ public class SudokuBoard
             }
     }
 
+    public int[][] getFirstBoard() {
+        return firstBoard;
+    }
+
     private void createFirstBoard()
     {
         for(int x=0; x<9; ++x)
@@ -73,5 +81,7 @@ public class SudokuBoard
         return true;
     }
 
-
+    public Pair<Integer, Integer> getAllowedFields() {
+        return allowedFields;
+    }
 }

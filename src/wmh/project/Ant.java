@@ -8,9 +8,11 @@ public class Ant {
 
     ArrayList<Path> paths;
 
-//    ArrayList<Integer> generateSuccessors(int currentNode, Graph graph)
+//    ArrayList<Integer> generateSuccessors(int currentNodeID, Graph graph, SudokuBoard sudokuBoard)
 //    {
 //        //todo: generate all next states
+//        Node currenNode = graph.nodes.get(currentNodeID);
+//
 //
 //    }
 
