@@ -33,7 +33,7 @@ public class Node {
             result = 0;
             for (int j = 0; j < 9; ++j)
             {
-                result += Math.pow((1.0 * j + 1), 4) * Math.pow(board[i][j]/10, 5);
+                result += Math.pow((1.0 * j + 1), 4) * Math.pow((board[i][j]*1.0)/10, 5);
             }
             result = round(result, 5);
             hashCode[i] = result;
@@ -67,6 +67,7 @@ public class Node {
             board[move.rowFrom][move.colFrom] = tmp2;
 
         }
+
 
         return board;
     }

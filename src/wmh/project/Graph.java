@@ -5,31 +5,44 @@ import java.util.Iterator;
 
 public class Graph {
 
-    ArrayList<Node> nodes;
-    ArrayList<ArrayList<Double>> graph;
+    ArrayList<Node> nodes = new ArrayList<Node>();
+    ArrayList<ArrayList<Double>> graph = new ArrayList<ArrayList<Double>>();
     private SudokuLevel level;
+    public double initialWeight;
 
     public Graph(SudokuLevel _level)
     {
         level = _level;
     }
 
-    private double initializeWeight()
-    {
-        switch (level)
-        {
+    public void initialWeight() {
+        switch (level) {
             case EASY:
-                return 0;   //todo: what initial weight?
+                initialWeight = 0;   //todo: what initial weight?
+                break;
             case MEDIUM:
-                return 0;   //todo: what initial weight?
+                initialWeight = 0;   //todo: what initial weight?
+                break;
             case HARD:
-                return 0;   //todo: what initial weight?
+                initialWeight = 0;   //todo: what initial weight?
+                break;
+            default:
+                System.exit(-1);
+
         }
-        System.exit(-1);
-        return -1;
     }
 
-    private void addNode(Node newNode)
+    public void changeInitialWeight(double rho)
+    {
+        initialWeight = (1-rho)*initialWeight;
+    }
+
+    public void evaporatePheromone(double rho)
+    {
+        //todo
+    }
+
+    public void addNode(Node newNode)
     {
         Iterator<ArrayList<Double>> iter = graph.iterator();
         ArrayList<Double> tmp;
@@ -38,11 +51,11 @@ public class Graph {
         while(iter.hasNext())
         {
             tmp = iter.next();
-            tmp.add(initializeWeight());
+            tmp.add(initialWeight);
         }
 
         for (int i=0; i<graph.size(); ++i)
-            newNodeWeights.add(initializeWeight());
+            newNodeWeights.add(initialWeight);
 
         nodes.add(newNode);
     }

@@ -26,9 +26,11 @@ public class Ant {
         //todo
     }
 
-    void buildPath(int iteration)
+    Path buildPath(int iteration)
     {
+        Path path = new Path();
         //todo
+        return path;
     }
 
     void updatePheromone(double rho, Graph graph, int iteration)

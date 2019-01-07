@@ -5,16 +5,18 @@ import java.util.List;
 
 public class SACO {
     SudokuBoard inputBoard;
-    private double alpha;
+    private double alpha; //?
     private double rho;
     private int antsNum;
     private int maxIterations;
-    private int epsilon;
+    private double epsilon;
     private double p;
     private SudokuLevel level;
-    Graph graph = new Graph(SudokuLevel.EASY);
-    Ant[] ants = new Ant[antsNum];
-    List<Path> paths = new ArrayList<Path>();
+    private boolean end = false;
+    private Graph graph = new Graph(SudokuLevel.EASY);
+    private Ant[] ants = new Ant[antsNum];
+    private List<Path> paths = new ArrayList<Path>();
+    private Path bestSolution;
 
     public SACO(double _alpha, double _rho, int _antNum, int _maxIterations, int _epsilon, double _p, SudokuLevel _level)
     {
@@ -29,12 +31,13 @@ public class SACO {
 
     private void reducePheromone()
     {
-        //todo
+        graph.evaporatePheromone(rho);
     }
 
     private void addNewPath(Path path)
     {
         //todo
+        paths.add(path);
     }
 
     private Path selectBestSolution()
@@ -46,12 +49,45 @@ public class SACO {
     public void execute()
     {
         InputReader input = new InputReader();
-        SudokuBoard sudokuBoard = input.readBoard("/home/aleksander/gitlab/Ant/src/com/company/sudoku", level);
+        SudokuBoard sudokuBoard = input.readBoard("/home/aleksander/github/SACO/src/wmh/project/sudoku", level);
 
-        sudokuBoard.displayBoard();
+        //sudokuBoard.displayBoard();
 
+        //initial Node
+        ArrayList<Move> initialMoves = new ArrayList<Move>();
+        Node initialNode = new Node(initialMoves, sudokuBoard);
+        graph.addNode(initialNode);
+        int timestep = 0;
 
+        // bring ants to life!
+        for(int i=0; i<antsNum; ++i)
+            ants[i] = new Ant();
+
+        // main loop
+        while(!end)
+        {
+            // construct path for each ant
+            for (int i = 0; i < antsNum; ++i)
+                addNewPath(ants[i].buildPath(maxIterations));
+
+            //pheromone evaporation
+            reducePheromone();
+
+            //update pheromone
+            for(int i=0; i<antsNum; ++i)
+                ants[i].updatePheromone(rho, graph, timestep);
+
+            timestep += 1;
+
+            for(Path path: paths)
+                if(path.evaluationFunction() < epsilon)
+                {
+                    end = true;
+                    break;
+                }
+        }
+
+        bestSolution = selectBestSolution();
     }
-
 }
 
