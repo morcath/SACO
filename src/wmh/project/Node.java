@@ -7,13 +7,21 @@ import java.util.Iterator;
 
 public class Node {
 
-    ArrayList<Move> moves;
+    private ArrayList<Move> moves;
     double[] hash;
 
     public Node(ArrayList<Move> previousMoves, SudokuBoard firstBoard)
     {
-        moves = previousMoves;
-        hash = makeHash(firstBoard);
+        //moves = previousMoves; //TODO: kopiowaæ?
+    	int previousSize = previousMoves.size();
+    	moves = new ArrayList<Move>(previousSize + 1);
+    	for(int i = 0; i < previousSize; i++)
+    	{
+    		moves.add(previousMoves.get(i)); //obiekty klasy Move nie s¹ kopiowane, tylko przepisywane referencje,
+    		//bo i tak same nie bêd¹ z niczym porównywane, nie ma co ich mno¿yæ    		
+    	}
+    	
+        hash = makeHash(firstBoard); //TODO: tutaj robimy hash z poprzedniej wersji planszy, nowego ruchu jeszcze nie ma!
     }
 
     void addMove(Move nextMove)
@@ -51,10 +59,18 @@ public class Node {
 
     public int[][] recreateBoard(SudokuBoard firstBoard)
     {
-        int[][] board;
+        int[][] board = new int[9][9];//kopia zamiast przepisywania referencji
         int tmp1, tmp2;
         Iterator<Move> iter = moves.iterator();
-        board = firstBoard.getFirstBoard();
+        
+        int[][] first = firstBoard.getFirstBoard(); 
+        for(int i = 0; i < 9; i++)
+        {
+        	for(int j = 0; j < 9; j++)
+        	{
+        		board[i][j] = first[i][j];
+        	}
+        }
 
         Move move;
         while(iter.hasNext())
@@ -70,6 +86,30 @@ public class Node {
 
 
         return board;
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+    	if(obj == null)
+    	{
+    		return false;
+    	}
+    	if(!obj.getClass().equals(this.getClass()))
+    	{
+    		return false;
+    	}
+    	Node other = (Node) obj;
+    	if(other == this)
+    	{
+    		return true;
+    	}
+    	return other.hash == this.hash; //TODO: a mo¿e zamiast hashy sprawdzaæ jednak sekwencjê ruchów?
+    }
+    
+    public ArrayList<Move> getMoves()
+    {
+    	return moves;
     }
 
 

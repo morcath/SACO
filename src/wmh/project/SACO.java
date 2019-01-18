@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SACO {
-    SudokuBoard inputBoard;
+    private SudokuBoard inputBoard;
     private double alpha; //?
     private double rho;
     private int antsNum;
@@ -12,13 +12,15 @@ public class SACO {
     private double epsilon;
     private double p;
     private SudokuLevel level;
+    private String filename;
     private boolean end = false;
-    private Graph graph = new Graph(SudokuLevel.EASY);
+    private Graph graph = new Graph();
     private Ant[] ants = new Ant[antsNum];
-    private List<Path> paths = new ArrayList<Path>();
+    private ArrayList<Path> paths = new ArrayList<Path>();
     private Path bestSolution;
 
-    public SACO(double _alpha, double _rho, int _antNum, int _maxIterations, int _epsilon, double _p, SudokuLevel _level)
+    public SACO(double _alpha, double _rho, int _antNum, int _maxIterations, int _epsilon, double _p, 
+    		SudokuLevel _level, String _filename)
     {
         alpha = _alpha;
         rho = _rho;
@@ -27,16 +29,19 @@ public class SACO {
         epsilon = _epsilon;
         p =_p;
         level = _level;
+        //graph = new Graph(/*level*/);
+        filename = _filename;
+        
     }
 
     private void reducePheromone()
     {
-        graph.evaporatePheromone(rho);
+        //graph.evaporatePheromone(rho);
     }
 
     private void addNewPath(Path path)
     {
-        //todo
+        //todo ma byæ niepowtarzalna
         paths.add(path);
     }
 
@@ -46,10 +51,10 @@ public class SACO {
         return paths.get(0);
     }
 
-    public void execute()
+    public void execute()//TODO œcie¿ka do pliku
     {
         InputReader input = new InputReader();
-        SudokuBoard sudokuBoard = input.readBoard("/home/aleksander/github/SACO/src/wmh/project/sudoku", level);
+        SudokuBoard sudokuBoard = input.readBoard(filename, level);
 
         //sudokuBoard.displayBoard();
 

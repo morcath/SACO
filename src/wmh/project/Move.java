@@ -13,4 +13,10 @@ public class Move {
         rowTo = _rowTo;
         colTo = _colTo;
     }
+    
+    public boolean equalTo(Move other)
+    {
+    	return this.rowFrom == other.rowFrom && this.colFrom == other.colFrom
+    			&& this.rowTo == other.rowTo && this.colTo == other.colTo;
+    }
 }

@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 public class Ant {
 
-    ArrayList<Path> paths;
-
+    private ArrayList<Path> paths = new ArrayList<Path>();
+    
+//mo¿e nie dawaæ w nastêpnikach mo¿liwoœci przejœcia do poprzednika
 //    ArrayList<Integer> generateSuccessors(int currentNodeID, Graph graph, SudokuBoard sudokuBoard)
 //    {
 //        //todo: generate all next states
@@ -28,12 +29,13 @@ public class Ant {
 
     Path buildPath(int iteration)
     {
-        Path path = new Path();
+        int sourceIndex = 0;
+    	Path path = new Path(sourceIndex);
         //todo
         return path;
     }
 
-    void updatePheromone(double rho, Graph graph, int iteration)
+    void updatePheromone(double rho, Graph graph, int iteration)//TODO: przy za³o¿eniu, ¿e iteracje s¹ numerowane od 0
     {
         //todo
     }

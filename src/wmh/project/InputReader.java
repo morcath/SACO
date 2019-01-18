@@ -26,6 +26,7 @@ public class InputReader {
                 }
 
             }
+            sc.close();
 
         }
         catch(FileNotFoundException e)
