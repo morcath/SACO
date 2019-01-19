@@ -3,42 +3,146 @@ package wmh.project;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class Ant {
 
     private ArrayList<Path> paths = new ArrayList<Path>();
     
 //mo¿e nie dawaæ w nastêpnikach mo¿liwoœci przejœcia do poprzednika
-//    ArrayList<Integer> generateSuccessors(int currentNodeID, Graph graph, SudokuBoard sudokuBoard)
-//    {
-//        //todo: generate all next states
-//        Node currenNode = graph.nodes.get(currentNodeID);
-//
-//
-//    }
-
-//    Pair<Integer, Double> calcualteProbabilities(double alpha, Graph graph)
-//    {
-//        //todo: probabilities of chose next state
-//    }
-
-    void selectSuccessor(int currentNode)
+    ArrayList<Integer> generateSuccessors(int currentNodeID, Graph graph, SudokuBoard sudokuBoard)
     {
-        //todo
+        ArrayList<Integer> successors = new ArrayList<Integer>();
+        Node currentNode = graph.getNode(currentNodeID);
+        ArrayList<Move> currentNodeMoves = currentNode.getMoves();
+        Move predecessorMove = null;
+        if(currentNodeMoves.size() > 0)
+        {
+        	predecessorMove = currentNodeMoves.get(currentNodeMoves.size() - 1);
+        }        
+        
+        ArrayList<Pair<Integer, Integer>> empty = sudokuBoard.getEmptyFields();
+        int emptyNum = empty.size();
+        for(int i = 0; i < emptyNum; i++)
+        {
+        	for(int j = i + 1; j < emptyNum; j++)
+        	{
+        		Pair<Integer, Integer> from = empty.get(i);
+        		Pair<Integer, Integer> to = empty.get(j);
+        		Move m = new Move(from.getKey(), from.getValue(), to.getKey(), to.getValue());
+        		if(!m.equalTo(predecessorMove)) //zabraniamy wykonania zamiany tych pól, co poprzednio, ¿eby nie krêciæ siê w kó³ko
+				{
+					Node succ = new Node(currentNodeMoves, sudokuBoard);
+        			succ.addMove(m);
+        			int successorIndex = graph.addNode(succ);
+        			successors.add(successorIndex);
+				}
+        	}
+        }
+        if(successors.size() == 0)
+        {
+        	//TODO: dodaæ poprzednik tego stanu, ale to siê chyba nie zdarzy...
+        }
+        return successors;
     }
 
-    Path buildPath(int iteration)
+    ArrayList<Pair<Integer, Double>> calculateProbabilities(ArrayList<Integer> successors, int sourceIndex, double alpha, Graph graph)
     {
-        int sourceIndex = 0;
+        int succNum = successors.size();
+    	ArrayList<Pair<Integer, Double>> probabilities = new ArrayList<Pair<Integer, Double>>(succNum);
+    	double sum = 0;
+    	
+    	for(int i = 0; i < succNum; i++)
+    	{
+    		int targetIndex = successors.get(i);
+    		double weight = graph.getWeight(sourceIndex, targetIndex);
+    		sum += Math.pow(weight, alpha);
+    	}
+    	
+    	for(int i = 0; i < succNum; i++)
+    	{
+    		int targetIndex = successors.get(i);
+    		double weight = graph.getWeight(sourceIndex, targetIndex);
+    		double probability = Math.pow(weight, alpha) / sum;
+    		Pair<Integer, Double> p = new Pair<Integer, Double>(targetIndex, probability);
+    		probabilities.add(p);
+    	}
+    	    	
+    	return probabilities;
+    }
+
+    //zwraca indeks wybranego nastêpnika w grafie
+    //TODO: mo¿e robiæ to w pêtli, dopóki jakiœ nastêpnik nie zostanie wybrany?
+    int selectSuccessor(ArrayList<Pair<Integer, Double>> probabilities)
+    {
+        Random gen = new Random();
+    	double random = gen.nextDouble();
+    	
+        Iterator<Pair<Integer, Double>> iter = probabilities.iterator();
+        while(iter.hasNext())
+        {
+        	Pair<Integer, Double> p = iter.next();
+        	if(random <= p.getValue())
+        	{
+        		return p.getKey();
+        	}
+        }
+        System.out.println("coœ nie tak z wyborem nastêpnika...");
+        return -1;
+    }
+
+    Path buildPath(double alpha, Graph graph, SudokuBoard sudokuBoard/*int iteration*/) //wybiera nastêpnika na podst. prawdopodobieñstwa i dodaje wêz³y do œcie¿ki, dopóki nie znajdzie wêz³a docelowego
+    {
+        int sourceIndex = 0;//czy na pewno, mo¿e podawaæ jako argument?
     	Path path = new Path(sourceIndex);
-        //todo
+    	boolean isSolved = sudokuBoard.isSolved(graph.getNode(sourceIndex));    	
+    	ArrayList<Integer> successors;
+    	ArrayList<Pair<Integer, Double>> probabilities;
+    	int targetIndex;
+
+    	while(!isSolved)
+    	{
+    		successors = generateSuccessors(sourceIndex, graph, sudokuBoard);
+        	probabilities = calculateProbabilities(successors, sourceIndex, alpha, graph);
+        	targetIndex = selectSuccessor(probabilities);
+        	
+        	Node successor = graph.getNode(targetIndex);
+        	path.addNode(targetIndex);
+        	
+        	sourceIndex = targetIndex;
+        	isSolved = sudokuBoard.isSolved(successor);
+    	}
+    	
+
+    	
+    	path.removeLoops();
+    	paths.add(path);
         return path;
     }
 
-    void updatePheromone(double rho, Graph graph, int iteration)//TODO: przy za³o¿eniu, ¿e iteracje s¹ numerowane od 0
+    void updatePheromone(Graph graph, int iteration)//przy za³o¿eniu, ¿e iteracje s¹ numerowane od 0
     {
-        //todo
+        Path currentPath = paths.get(iteration);
+    	int nodesInPath = currentPath.getNodesNumber();
+    	double pheromoneToAdd = 1 / currentPath.evaluationFunction();
+    	System.out.println(pheromoneToAdd);
+    	for(int sourceIndex = 0; sourceIndex < nodesInPath - 1; sourceIndex++)
+    	{
+    		int targetIndex = sourceIndex + 1; //indeks, pod którym w currentPath znajduje siê indeks wêz³a w grafie
+    		int source = currentPath.getNode(sourceIndex);
+    		int target = currentPath.getNode(targetIndex); //indeksy wêz³ów w grafie
+    		graph.updatePheromone(source, target, pheromoneToAdd);
+    	}
     }
-
-
+    
+    public ArrayList<Path> getPaths()
+    {
+    	return paths;
+    }
+    
+    public Path getPathFromIteration(int iteration)
+    {
+    	return paths.get(iteration);
+    }
 }

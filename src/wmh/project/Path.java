@@ -57,8 +57,52 @@ public class Path {
     {
     	for(int i = 0; i < nodes.size(); i++)
     	{
-    		System.out.println(nodes.get(i));
+    		System.out.print(nodes.get(i) + " ");
     	}
+    	System.out.println();
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+    	if(obj == null)
+    	{
+    		return false;
+    	}
+    	if(!obj.getClass().equals(this.getClass()))
+    	{
+    		return false;
+    	}
+    	Path other = (Path) obj;
+    	if(other == this)
+    	{
+    		return true;
+    	}
+    	if(other.length != this.length)
+    	{
+    		return false;
+    	}
+    	
+    	int nodesInPath = nodes.size();
+    	for(int i = 0; i < nodesInPath; i++)
+    	{
+    		if(!this.nodes.get(i).equals(other.nodes.get(i)))
+    		{
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    public int getNodesNumber()
+    {
+    	return nodes.size();
+    }
+    
+    //zwraca indeks wêz³a, który na œcie¿ce znajduje siê pod danym indeksem, w ca³ym grafie
+    public int getNode(int index)
+    {
+    	return nodes.get(index);
     }
 
 }

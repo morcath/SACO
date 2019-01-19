@@ -16,6 +16,10 @@ public class Move {
     
     public boolean equalTo(Move other)
     {
+    	if(other == null)
+    	{
+    		return false;
+    	}
     	return this.rowFrom == other.rowFrom && this.colFrom == other.colFrom
     			&& this.rowTo == other.rowTo && this.colTo == other.colTo;
     }

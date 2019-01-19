@@ -1,7 +1,8 @@
 package wmh.project;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Collections;
 
 public class SACO {
     private SudokuBoard inputBoard;
@@ -15,7 +16,7 @@ public class SACO {
     private String filename;
     private boolean end = false;
     private Graph graph = new Graph();
-    private Ant[] ants = new Ant[antsNum];
+    private Ant[] ants;// = new Ant[antsNum];
     private ArrayList<Path> paths = new ArrayList<Path>();
     private Path bestSolution;
 
@@ -25,6 +26,7 @@ public class SACO {
         alpha = _alpha;
         rho = _rho;
         antsNum = _antNum;
+        ants = new Ant[antsNum];
         maxIterations = _maxIterations;
         epsilon = _epsilon;
         p =_p;
@@ -36,31 +38,59 @@ public class SACO {
 
     private void reducePheromone()
     {
-        //graph.evaporatePheromone(rho);
+        graph.evaporatePheromone(rho);
     }
 
     private void addNewPath(Path path)
     {
-        //todo ma byæ niepowtarzalna
+        int pathSize = paths.size();
+        for(int i = 0; i < pathSize; i++)
+        {
+        	if(paths.get(i).equals(path))
+        	{
+        		return;
+        	}
+        }
         paths.add(path);
     }
 
     private Path selectBestSolution()
     {
-        //todo
-        return paths.get(0);
+        int length = paths.size();
+    	if(length < 1)
+        {
+        	return null;
+        }
+        
+    	Path bestPath = paths.get(0);
+        double bestEvaluationFunction = bestPath.evaluationFunction();
+        Path current;
+        double currentEvaluationFunction;
+        
+        for(int i = 1; i < length; i++)
+        {
+        	current = paths.get(i);
+        	currentEvaluationFunction = current.evaluationFunction();
+        	if(currentEvaluationFunction < bestEvaluationFunction)
+        	{
+        		bestPath = current;
+        		bestEvaluationFunction = currentEvaluationFunction;
+        	}
+        }
+        return bestPath;
     }
-
-    public void execute()//TODO œcie¿ka do pliku
+    
+    
+    public void execute()
     {
         InputReader input = new InputReader();
-        SudokuBoard sudokuBoard = input.readBoard(filename, level);
+        /*SudokuBoard sudokuBoard*/inputBoard = input.readBoard(filename, level);
 
         //sudokuBoard.displayBoard();
 
         //initial Node
         ArrayList<Move> initialMoves = new ArrayList<Move>();
-        Node initialNode = new Node(initialMoves, sudokuBoard);
+        Node initialNode = new Node(initialMoves, inputBoard);
         graph.addNode(initialNode);
         int timestep = 0;
 
@@ -68,31 +98,102 @@ public class SACO {
         for(int i=0; i<antsNum; ++i)
             ants[i] = new Ant();
 
+        
+        //System.out.println(graph.getNodeIndex(initialNode));
+        
         // main loop
         while(!end)
         {
             // construct path for each ant
             for (int i = 0; i < antsNum; ++i)
-                addNewPath(ants[i].buildPath(maxIterations));
+                addNewPath(ants[i].buildPath(alpha, graph, inputBoard/*timestep*/));
 
             //pheromone evaporation
             reducePheromone();
 
             //update pheromone
             for(int i=0; i<antsNum; ++i)
-                ants[i].updatePheromone(rho, graph, timestep);
+                ants[i].updatePheromone(graph, timestep);
 
             timestep += 1;
 
-            for(Path path: paths)
+            //obs³uga warunków zakoñczenia
+            //przekroczenie maksymalnej liczby iteracji
+            if(timestep >= maxIterations)
+            {
+            	System.out.println("Warunek stopu: przekroczenie maksymalnej liczby iteracji");
+            	end = true;
+            	continue; //albo po prostu break i ju¿
+            }            
+            
+            //wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹
+            if(!end && p > 0.5)
+            {
+            	//œcie¿ki wyznaczone przez wszystkie mrówki w bie¿¹cej iteracji
+	            ArrayList<Path> currentPaths = new ArrayList<Path>(antsNum);
+	            for(int i = 0; i < antsNum; i++)
+	            {
+	            	currentPaths.set(i, ants[i].getPathFromIteration(timestep - 1));
+	            }
+	            
+	            for(int i = 0; i < antsNum; i++)
+	            {
+	            	double frequency = Collections.frequency(currentPaths, currentPaths.get(i));
+	            	if(frequency >= p * antsNum)
+	            	{
+	            		System.out.println("Warunek stopu: wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹");
+	            		end = true;
+	            		break;
+	            	}
+	            }
+            }
+            
+            //znaleziono akceptowalne rozwi¹zanie
+            if(!end && epsilon > 0)
+            {
+            	for(Path path: paths)
                 if(path.evaluationFunction() < epsilon)
                 {
-                    end = true;
+                	System.out.println("Warunek stopu: znaleziono akceptowalne rozwi¹zanie");
+                	end = true;
                     break;
                 }
-        }
-
+            }
+            
+        }        
+        
         bestSolution = selectBestSolution();
+    }
+    
+    public void displayBestSolution()
+    {
+    	if(bestSolution == null)
+    	{
+    		System.out.println("Nie uda³o siê znalezc ¿adnego rozwi¹zania");
+    		return;
+    	}
+    	System.out.println("Najlepsze rozwi¹zanie:\npath = ");
+    	bestSolution.display();
+    	System.out.println("Kolejne wersje planszy");
+    	for(int i = 0; i < bestSolution.getNodesNumber(); i++)
+    	{
+    		System.out.println("Wersja nr " + i + 1);
+    		int nodeIndex = bestSolution.getNode(i);
+    		int[][] board = graph.getNode(nodeIndex).recreateBoard(inputBoard);
+    		for(int m = 0; m < 9; m++)
+    		{
+    			for(int n = 0; n < 9; n++)
+    			{
+    				System.out.print(board[m][n]);
+    			}
+    			System.out.println();
+    		}
+    	}
+    }
+    
+    public void displayGraph()
+    {
+    	graph.display();
     }
 }
 

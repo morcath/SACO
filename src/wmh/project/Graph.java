@@ -40,27 +40,46 @@ public class Graph {
     	return result;
     }
 
-    /*public void changeInitialWeight(double rho)//TODO??
+    /*public void changeInitialWeight(double rho)//chyba niepotrzebne
     {
         initialWeight = (1-rho)*initialWeight;
-    }
-
-    public void evaporatePheromone(double rho)//TODO ???
-    {
-        //todo
     }*/
 
-    public void addNode(Node newNode)//przecie¿ nowy wêze³ nie musi mieæ po³¹czenia ze wszystkimi innymi, po to jest metoda areNeighbours
+    public void evaporatePheromone(double rho)
+    {
+        int nodesNum = graph.size();
+        for(int i = 0; i < nodesNum; i++)
+        {
+        	ArrayList<Double> row = graph.get(i);
+        	for(int j = 0; j < nodesNum; j++)
+        	{
+        		Double weight = row.get(j);
+        		weight = (1 - rho) * weight;
+        		row.set(j, weight);
+        	}
+        }
+    }
+    
+    public void updatePheromone(int rowIndex, int colIndex, double delta)
+    {
+    	ArrayList<Double> row = graph.get(rowIndex);
+    	Double currentPheromone = row.get(colIndex);
+    	currentPheromone += delta;
+    	row.set(colIndex, currentPheromone);
+    }
+
+    //zwraca indeks nowo utworzonego wêz³a na liœcie nodes
+    public int addNode(Node newNode)//przecie¿ nowy wêze³ nie musi mieæ po³¹czenia ze wszystkimi innymi, po to jest metoda areNeighbours
     {
     	//czy nie wystêpuje ju¿ w grafie
-    	Iterator<Node> nodeIter = nodes.iterator();
+    	int nodesNum = nodes.size();
     	Node currentNode;
-    	while(nodeIter.hasNext())
+    	for(int i = 0; i < nodesNum; i++)
     	{
-    		currentNode = nodeIter.next();
+    		currentNode = nodes.get(i);
     		if(currentNode.equals(newNode))
     		{
-    			return; //taki wêze³ ju¿ jest w grafie, nie ma co go wstawiaæ
+    			return i; //taki wêze³ ju¿ jest w grafie, nie ma co go wstawiaæ
     		}
     	}
     	
@@ -103,10 +122,10 @@ public class Graph {
         
 
         nodes.add(newNode);
-    	
+        return nodes.size() - 1;    	
     }
 
-    public int getNodeIndex(Node node)
+    /*public int getNodeIndex(Node node)
     {
         Iterator<Node> iter = nodes.iterator();
         Node current;
@@ -126,7 +145,7 @@ public class Graph {
         addNode(node);
         result++; //zamiast nodes.size() czy te¿ size - 1
         return result;
-    }
+    }*/
 
     /*EdgeDirection areNeighbours(Node first, Node second)
     {
@@ -158,4 +177,41 @@ public class Graph {
     	return true;
     }
 
+    public Node getNode(int index)
+    {
+    	return nodes.get(index);
+    }
+    
+    public double getWeight(int source, int target)
+    {
+    	ArrayList<Double> sourceRow = graph.get(source);
+    	return sourceRow.get(target);
+    }
+    
+    public void display()
+    {
+    	int size = graph.size();
+    	System.out.print("\t");
+    	for(int i = 0; i < size; i++)
+    	{
+    		System.out.print(i + " ");
+    	}
+    	System.out.print("\n\t");
+    	for(int i = 0; i < size; i++)
+    	{
+    		System.out.print("---");
+    	}
+    	System.out.println();
+    	
+    	for(int i = 0; i < size; i++)
+    	{
+    		System.out.print(i + " |\t");
+    		ArrayList<Double> row = graph.get(i);
+    		for(int j = 0; j < size; j++)
+    		{
+    			System.out.print(row.get(j) + " ");
+    		}
+    		System.out.println();
+    	}
+    }
 }
