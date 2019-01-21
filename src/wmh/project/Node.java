@@ -7,26 +7,28 @@ import java.util.Iterator;
 
 public class Node {
 
-    private ArrayList<Move> moves;
+    public ArrayList<Move> moves;
     double[] hash;
 
     public Node(ArrayList<Move> previousMoves, SudokuBoard firstBoard)
     {
-        //moves = previousMoves; //TODO: kopiowaæ?
+        //moves = previousMoves; //TODO: kopiowaï¿½?
     	int previousSize = previousMoves.size();
     	moves = new ArrayList<Move>(previousSize + 1);
     	for(int i = 0; i < previousSize; i++)
     	{
-    		moves.add(previousMoves.get(i)); //obiekty klasy Move nie s¹ kopiowane, tylko przepisywane referencje,
-    		//bo i tak same nie bêd¹ z niczym porównywane, nie ma co ich mno¿yæ    		
+    		moves.add(previousMoves.get(i)); //obiekty klasy Move nie sï¿½ kopiowane, tylko przepisywane referencje,
+    		//bo i tak same nie bï¿½dï¿½ z niczym porï¿½wnywane, nie ma co ich mnoï¿½yï¿½    		
     	}
     	
         hash = makeHash(firstBoard); //TODO: tutaj robimy hash z poprzedniej wersji planszy, nowego ruchu jeszcze nie ma!
     }
 
-    void addMove(Move nextMove)
+    void addMove(Move nextMove, SudokuBoard firstBoard)
     {
+
         moves.add(nextMove);
+        hash = makeHash(firstBoard);
     }
 
     public double[] makeHash(SudokuBoard firstBoard)
@@ -104,7 +106,20 @@ public class Node {
     	{
     		return true;
     	}
-    	return other.hash == this.hash; //TODO: a mo¿e zamiast hashy sprawdzaæ jednak sekwencjê ruchów?
+
+        boolean result = true;
+        for(int i = 0; i<this.hash.length; ++i)
+        {
+            if(other.hash[i] != this.hash[i])
+            {
+                result = false;
+                break;
+            }
+        }
+
+
+    	return result;
+    	//return other.hash == this.hash; //TODO: a moï¿½e zamiast hashy sprawdzaï¿½ jednak sekwencjï¿½ ruchï¿½w?
     }
     
     public ArrayList<Move> getMoves()

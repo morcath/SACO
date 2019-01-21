@@ -10,9 +10,9 @@ public class Main {
         InputReader r = new InputReader();        
         SudokuBoard b = r.readBoard(filename, SudokuLevel.EASY);        
         b.displayBoard();*/
-    	double alpha = 2; //nigdzie nie ma mowy o tym, z jakiego przedzia³u ma byæ
+    	double alpha = 1; //nigdzie nie ma mowy o tym, z jakiego przedziaï¿½u ma byï¿½
     	double rho = 0.2;
-    	int antNum = 2;
+    	int antNum = 1;
     	int maxIterations = 5;
     	int epsilon = 0;
     	double p = 1;

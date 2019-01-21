@@ -100,10 +100,12 @@ public class SACO {
 
         
         //System.out.println(graph.getNodeIndex(initialNode));
-        
+        int loop = 0;
         // main loop
         while(!end)
         {
+            System.out.println(loop);
+            loop++;
             // construct path for each ant
             for (int i = 0; i < antsNum; ++i)
                 addNewPath(ants[i].buildPath(alpha, graph, inputBoard/*timestep*/));
@@ -116,20 +118,19 @@ public class SACO {
                 ants[i].updatePheromone(graph, timestep);
 
             timestep += 1;
-
-            //obs³uga warunków zakoñczenia
+            //obsï¿½uga warunkï¿½w zakoï¿½czenia
             //przekroczenie maksymalnej liczby iteracji
             if(timestep >= maxIterations)
             {
             	System.out.println("Warunek stopu: przekroczenie maksymalnej liczby iteracji");
             	end = true;
-            	continue; //albo po prostu break i ju¿
+            	continue; //albo po prostu break i juï¿½
             }            
             
-            //wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹
+            //wiï¿½kszoï¿½ï¿½ mrï¿½wek podï¿½ï¿½a tï¿½ samï¿½ ï¿½cieï¿½kï¿½
             if(!end && p > 0.5)
             {
-            	//œcie¿ki wyznaczone przez wszystkie mrówki w bie¿¹cej iteracji
+            	//ï¿½cieï¿½ki wyznaczone przez wszystkie mrï¿½wki w bieï¿½ï¿½cej iteracji
 	            ArrayList<Path> currentPaths = new ArrayList<Path>(antsNum);
 	            for(int i = 0; i < antsNum; i++)
 	            {
@@ -141,20 +142,20 @@ public class SACO {
 	            	double frequency = Collections.frequency(currentPaths, currentPaths.get(i));
 	            	if(frequency >= p * antsNum)
 	            	{
-	            		System.out.println("Warunek stopu: wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹");
+	            		System.out.println("Warunek stopu: wiï¿½kszoï¿½ï¿½ mrï¿½wek podï¿½ï¿½a tï¿½ samï¿½ ï¿½cieï¿½kï¿½");
 	            		end = true;
 	            		break;
 	            	}
 	            }
             }
             
-            //znaleziono akceptowalne rozwi¹zanie
+            //znaleziono akceptowalne rozwiï¿½zanie
             if(!end && epsilon > 0)
             {
             	for(Path path: paths)
                 if(path.evaluationFunction() < epsilon)
                 {
-                	System.out.println("Warunek stopu: znaleziono akceptowalne rozwi¹zanie");
+                	System.out.println("Warunek stopu: znaleziono akceptowalne rozwiï¿½zanie");
                 	end = true;
                     break;
                 }
@@ -169,10 +170,10 @@ public class SACO {
     {
     	if(bestSolution == null)
     	{
-    		System.out.println("Nie uda³o siê znalezc ¿adnego rozwi¹zania");
+    		System.out.println("Nie udaï¿½o siï¿½ znalezc ï¿½adnego rozwiï¿½zania");
     		return;
     	}
-    	System.out.println("Najlepsze rozwi¹zanie:\npath = ");
+    	System.out.println("Najlepsze rozwiï¿½zanie:\npath = ");
     	bestSolution.display();
     	System.out.println("Kolejne wersje planszy");
     	for(int i = 0; i < bestSolution.getNodesNumber(); i++)

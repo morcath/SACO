@@ -16,7 +16,7 @@ public class Graph {
         level = _level;//TODO: chyba niepotrzebne
     }*/
 
-    public double initialWeight() {//TODO: ona powinna byæ losowa i nie zale¿eæ od poziomu trudnoœci
+    public double initialWeight() {//TODO: ona powinna byï¿½ losowa i nie zaleï¿½eï¿½ od poziomu trudnoï¿½ci
         /*switch (level) {
             case EASY:
                 initialWeight = 0;   //todo: what initial weight?
@@ -32,7 +32,7 @@ public class Graph {
 
         }*/
     	Random random = new Random();
-    	double result = random.nextDouble(); //zwraca liczbê z przedzia³u [0,1) - czy to na pewno bêdzie "ma³a" pocz¹tkowa waga?
+    	double result = random.nextDouble(); //zwraca liczbï¿½ z przedziaï¿½u [0,1) - czy to na pewno bï¿½dzie "maï¿½a" poczï¿½tkowa waga?
     	while(result == 0)
     	{
     		result = random.nextDouble();
@@ -68,10 +68,10 @@ public class Graph {
     	row.set(colIndex, currentPheromone);
     }
 
-    //zwraca indeks nowo utworzonego wêz³a na liœcie nodes
-    public int addNode(Node newNode)//przecie¿ nowy wêze³ nie musi mieæ po³¹czenia ze wszystkimi innymi, po to jest metoda areNeighbours
+    //zwraca indeks nowo utworzonego wï¿½zï¿½a na liï¿½cie nodes
+    public int addNode(Node newNode)//przecieï¿½ nowy wï¿½zeï¿½ nie musi mieï¿½ poï¿½ï¿½czenia ze wszystkimi innymi, po to jest metoda areNeighbours
     {
-    	//czy nie wystêpuje ju¿ w grafie
+    	//czy nie wystï¿½puje juï¿½ w grafie
     	int nodesNum = nodes.size();
     	Node currentNode;
     	for(int i = 0; i < nodesNum; i++)
@@ -79,22 +79,22 @@ public class Graph {
     		currentNode = nodes.get(i);
     		if(currentNode.equals(newNode))
     		{
-    			return i; //taki wêze³ ju¿ jest w grafie, nie ma co go wstawiaæ
+    			return i; //taki wï¿½zeï¿½ juï¿½ jest w grafie, nie ma co go wstawiaï¿½
     		}
     	}
     	
-    	//za³o¿enie: macierz incydencji jest tak budowana, ¿e wierzocho³ek ¿ród³owy krawêdzi jest w wierszu,
+    	//zaï¿½oï¿½enie: macierz incydencji jest tak budowana, ï¿½e wierzochoï¿½ek ï¿½rï¿½dï¿½owy krawï¿½dzi jest w wierszu,
     	//a docelowy w kolumnie
     	
     	Iterator<ArrayList<Double>> iter = graph.iterator();
         ArrayList<Double> tmp;
         ArrayList<Double> newNodeWeights = new ArrayList<Double>(graph.size() + 1);
         int rowNum = 0;
-        //wiersze - w ka¿dym dodawany element nowej kolumny
+        //wiersze - w kaï¿½dym dodawany element nowej kolumny
         while(iter.hasNext())
         {
             tmp = iter.next();
-            double weight = 0;//jeœli nie ma po³¹czenia z wêz³a spod indeksu rowNum ze wstawianym wêz³em
+            double weight = 0;//jeï¿½li nie ma poï¿½ï¿½czenia z wï¿½zï¿½a spod indeksu rowNum ze wstawianym wï¿½zï¿½em
             
             if(areSuccessorOf(nodes.get(rowNum), newNode))
             {
@@ -104,19 +104,19 @@ public class Graph {
             tmp.add(weight);
             rowNum++;
         }
-        //utworzenie wiersza dla nowo dodanego wêz³a
+        //utworzenie wiersza dla nowo dodanego wï¿½zï¿½a
         for (int i=0; i<graph.size(); ++i)
         {
             double weight = 0;
-            if(areSuccessorOf(newNode, nodes.get(i)))
+            if(areSuccessorOf(nodes.get(i), newNode))
             {
-            	weight = initialWeight(); ///chocia¿ czy z nowo utworzonego wêz³a mog¹ prowadziæ jakieœ krawêdzie do starszych?
+            	weight = initialWeight(); ///chociaï¿½ czy z nowo utworzonego wï¿½zï¿½a mogï¿½ prowadziï¿½ jakieï¿½ krawï¿½dzie do starszych?
             }
             
         	newNodeWeights.add(weight);
         }
         
-        newNodeWeights.add(0.0); //waga krawêdzi miêdzy dodanym wêz³em a nim samym
+        newNodeWeights.add(0.0); //waga krawï¿½dzi miï¿½dzy dodanym wï¿½zï¿½em a nim samym
         
         graph.add(newNodeWeights);
         
@@ -143,7 +143,7 @@ public class Graph {
         }
 
         addNode(node);
-        result++; //zamiast nodes.size() czy te¿ size - 1
+        result++; //zamiast nodes.size() czy teï¿½ size - 1
         return result;
     }*/
 
@@ -173,7 +173,7 @@ public class Graph {
     			return false;
     		}
     	}
-    	//ró¿ni¹ siê tylko jednym, ostatnim elementem
+    	//rï¿½niï¿½ siï¿½ tylko jednym, ostatnim elementem
     	return true;
     }
 
