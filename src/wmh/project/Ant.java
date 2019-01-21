@@ -35,7 +35,7 @@ public class Ant {
 				{
 					Node succ = new Node(currentNodeMoves, sudokuBoard);
         			succ.addMove(m, sudokuBoard);
-        			int successorIndex = graph.addNode(succ);
+        			int successorIndex = graph.addNode(succ, sudokuBoard);
 
 //        			if(currentNode.moves.size() + 1 != graph.getNode(successorIndex).moves.size() && currentNodeID != successorIndex)
 //        				System.out.println("??");

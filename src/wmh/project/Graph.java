@@ -69,7 +69,7 @@ public class Graph {
     }
 
     //zwraca indeks nowo utworzonego w�z�a na li�cie nodes
-    public int addNode(Node newNode)//przecie� nowy w�ze� nie musi mie� po��czenia ze wszystkimi innymi, po to jest metoda areNeighbours
+    public int addNode(Node newNode, SudokuBoard input)//przecie� nowy w�ze� nie musi mie� po��czenia ze wszystkimi innymi, po to jest metoda areNeighbours
     {
     	//czy nie wyst�puje ju� w grafie
     	int nodesNum = nodes.size();
@@ -96,7 +96,7 @@ public class Graph {
             tmp = iter.next();
             double weight = 0;//je�li nie ma po��czenia z w�z�a spod indeksu rowNum ze wstawianym w�z�em
             
-            if(areSuccessorOf(nodes.get(rowNum), newNode))
+            if(isSuccessorOf(nodes.get(rowNum), newNode, input))
             {
             	weight = initialWeight();
             }
@@ -108,7 +108,7 @@ public class Graph {
         for (int i=0; i<graph.size(); ++i)
         {
             double weight = 0;
-            if(areSuccessorOf(nodes.get(i), newNode))
+            if(isSuccessorOf(nodes.get(i), newNode, input))
             {
             	weight = initialWeight(); ///chocia� czy z nowo utworzonego w�z�a mog� prowadzi� jakie� kraw�dzie do starszych?
             }
@@ -153,9 +153,9 @@ public class Graph {
         return EdgeDirection.None;
     }*/
     
-    private boolean areSuccessorOf(Node predecessor, Node successor)
+    private boolean isSuccessorOf(Node first, Node second, SudokuBoard input)
     {
-    	ArrayList<Move> predMoves = predecessor.getMoves();
+    	/*ArrayList<Move> predMoves = predecessor.getMoves();
     	ArrayList<Move> succMoves = successor.getMoves();
     	int predLength = predMoves.size();
     	int succLength = succMoves.size();
@@ -174,7 +174,21 @@ public class Graph {
     		}
     	}
     	//r�ni� si� tylko jednym, ostatnim elementem
-    	return true;
+    	return true;*/
+    	int[][] firstBoard = first.recreateBoard(input);
+    	int[][] secondBoard = second.recreateBoard(input);
+    	int diffs = 0;
+    	for(int i = 0; i < 9; i++)
+    	{
+    		for(int j = 0; j < 9; j++)
+    		{
+    			if(firstBoard[i][j] != secondBoard[i][j])
+    			{
+    				diffs++;
+    			}
+    		}
+    	}
+    	return diffs == 2;
     }
 
     public Node getNode(int index)

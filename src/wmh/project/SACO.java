@@ -91,7 +91,7 @@ public class SACO {
         //initial Node
         ArrayList<Move> initialMoves = new ArrayList<Move>();
         Node initialNode = new Node(initialMoves, inputBoard);
-        graph.addNode(initialNode);
+        graph.addNode(initialNode, inputBoard);
         int timestep = 0;
 
         // bring ants to life!
