@@ -85,7 +85,7 @@ public class Ant {
     //TODO: mo�e robi� to w p�tli, dop�ki jaki� nast�pnik nie zostanie wybrany?
     int selectSuccessor(ArrayList<Pair<Integer, Double>> probabilities)
     {
-        Random gen = new Random();
+        Random gen = new Random(/*12345*/);
     	double random = gen.nextDouble();
     	
         Iterator<Pair<Integer, Double>> iter = probabilities.iterator();

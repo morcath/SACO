@@ -66,7 +66,7 @@ public class SudokuBoard
 
     private int generateDigit(int x, int y)
     {
-        Random generator = new Random();
+        Random generator = new Random(/*12345*/);
         int result;
 
         if(mask[x][y])

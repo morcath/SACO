@@ -12,7 +12,7 @@ public class Main {
         b.displayBoard();*/
     	double alpha = 1; //nigdzie nie ma mowy o tym, z jakiego przedzia�u ma by�
     	double rho = 0.2;
-    	int antNum = 1;
+    	int antNum = 5;
     	int maxIterations = 5;
     	int epsilon = 0;
     	double p = 1;
@@ -22,6 +22,6 @@ public class Main {
     	SACO saco = new SACO(alpha, rho, antNum, maxIterations, epsilon, p, level, filename);
         saco.execute();
         saco.displayBestSolution();
-        saco.displayGraph();
+        //saco.displayGraph();
     }
 }

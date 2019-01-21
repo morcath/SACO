@@ -31,7 +31,7 @@ public class Graph {
                 System.exit(-1);
 
         }*/
-    	Random random = new Random();
+    	Random random = new Random(/*12345*/);
     	double result = random.nextDouble(); //zwraca liczb� z przedzia�u [0,1) - czy to na pewno b�dzie "ma�a" pocz�tkowa waga?
     	while(result == 0)
     	{

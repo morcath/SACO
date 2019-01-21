@@ -134,7 +134,7 @@ public class SACO {
 	            ArrayList<Path> currentPaths = new ArrayList<Path>(antsNum);
 	            for(int i = 0; i < antsNum; i++)
 	            {
-	            	currentPaths.set(i, ants[i].getPathFromIteration(timestep - 1));
+	            	currentPaths.add(ants[i].getPathFromIteration(timestep - 1));
 	            }
 	            
 	            for(int i = 0; i < antsNum; i++)
@@ -170,15 +170,15 @@ public class SACO {
     {
     	if(bestSolution == null)
     	{
-    		System.out.println("Nie udaï¿½o siï¿½ znalezc ï¿½adnego rozwiï¿½zania");
+    		System.out.println("Nie uda³o siê znalezc zadnego rozwiazania");
     		return;
     	}
-    	System.out.println("Najlepsze rozwiï¿½zanie:\npath = ");
+    	System.out.println("Najlepsze rozwiazanie:\npath = ");
     	bestSolution.display();
     	System.out.println("Kolejne wersje planszy");
     	for(int i = 0; i < bestSolution.getNodesNumber(); i++)
     	{
-    		System.out.println("Wersja nr " + i + 1);
+    		System.out.println("Wersja nr " + (i + 1));
     		int nodeIndex = bestSolution.getNode(i);
     		int[][] board = graph.getNode(nodeIndex).recreateBoard(inputBoard);
     		for(int m = 0; m < 9; m++)
@@ -189,6 +189,7 @@ public class SACO {
     			}
     			System.out.println();
     		}
+    		System.out.println();
     	}
     }
     
