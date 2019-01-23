@@ -8,42 +8,16 @@ public class Graph {
 
     private ArrayList<Node> nodes = new ArrayList<Node>();
     private ArrayList<ArrayList<Double>> graph = new ArrayList<ArrayList<Double>>();
-    //private SudokuLevel level;
-    //public double initialWeight;
-
-    /*public Graph(SudokuLevel _level)
-    {
-        level = _level;//TODO: chyba niepotrzebne
-    }*/
-
-    public double initialWeight() {//TODO: ona powinna byï¿½ losowa i nie zaleï¿½eï¿½ od poziomu trudnoï¿½ci
-        /*switch (level) {
-            case EASY:
-                initialWeight = 0;   //todo: what initial weight?
-                break;
-            case MEDIUM:
-                initialWeight = 0;   //todo: what initial weight?
-                break;
-            case HARD:
-                initialWeight = 0;   //todo: what initial weight?
-                break;
-            default:
-                System.exit(-1);
-
-        }*/
-    	Random random = new Random(/*12345*/);
-    	double result = random.nextDouble(); //zwraca liczbï¿½ z przedziaï¿½u [0,1) - czy to na pewno bï¿½dzie "maï¿½a" poczï¿½tkowa waga?
+    
+    public double initialWeight() {
+    	Random random = new Random();
+    	double result = random.nextDouble(); //zwraca liczbê z przedzia³u [0,1)
     	while(result == 0)
     	{
     		result = random.nextDouble();
     	}
     	return result;
     }
-
-    /*public void changeInitialWeight(double rho)//chyba niepotrzebne
-    {
-        initialWeight = (1-rho)*initialWeight;
-    }*/
 
     public void evaporatePheromone(double rho)
     {
@@ -68,10 +42,10 @@ public class Graph {
     	row.set(colIndex, currentPheromone);
     }
 
-    //zwraca indeks nowo utworzonego wï¿½zï¿½a na liï¿½cie nodes
-    public int addNode(Node newNode, SudokuBoard input)//przecieï¿½ nowy wï¿½zeï¿½ nie musi mieï¿½ poï¿½ï¿½czenia ze wszystkimi innymi, po to jest metoda areNeighbours
+    //zwraca indeks nowo utworzonego wêz³a na liœcie nodes
+    public int addNode(Node newNode, SudokuBoard input)
     {
-    	//czy nie wystï¿½puje juï¿½ w grafie
+    	//czy nie wystêpuje ju¿ w grafie
     	int nodesNum = nodes.size();
     	Node currentNode;
     	for(int i = 0; i < nodesNum; i++)
@@ -79,22 +53,22 @@ public class Graph {
     		currentNode = nodes.get(i);
     		if(currentNode.equals(newNode))
     		{
-    			return i; //taki wï¿½zeï¿½ juï¿½ jest w grafie, nie ma co go wstawiaï¿½
+    			return i; //taki wêze³ ju¿ jest w grafie, nie ma co go wstawiaæ
     		}
     	}
     	
-    	//zaï¿½oï¿½enie: macierz incydencji jest tak budowana, ï¿½e wierzochoï¿½ek ï¿½rï¿½dï¿½owy krawï¿½dzi jest w wierszu,
+    	//za³o¿enie: macierz incydencji jest tak budowana, ¿e wierzcho³ek zród³owy krawêdzi jest w wierszu,
     	//a docelowy w kolumnie
     	
     	Iterator<ArrayList<Double>> iter = graph.iterator();
         ArrayList<Double> tmp;
         ArrayList<Double> newNodeWeights = new ArrayList<Double>(graph.size() + 1);
         int rowNum = 0;
-        //wiersze - w kaï¿½dym dodawany element nowej kolumny
+        //wiersze - w ka¿dym dodawany element nowej kolumny
         while(iter.hasNext())
         {
             tmp = iter.next();
-            double weight = 0;//jeï¿½li nie ma poï¿½ï¿½czenia z wï¿½zï¿½a spod indeksu rowNum ze wstawianym wï¿½zï¿½em
+            double weight = 0;//je¿eli nie ma po³¹czenia wêz³a spod indeksu rowNum ze wstawianym wêz³em
             
             if(isSuccessorOf(nodes.get(rowNum), newNode, input))
             {
@@ -104,19 +78,19 @@ public class Graph {
             tmp.add(weight);
             rowNum++;
         }
-        //utworzenie wiersza dla nowo dodanego wï¿½zï¿½a
+        //utworzenie wiersza dla nowo dodanego wêz³a
         for (int i=0; i<graph.size(); ++i)
         {
             double weight = 0;
             if(isSuccessorOf(nodes.get(i), newNode, input))
             {
-            	weight = initialWeight(); ///chociaï¿½ czy z nowo utworzonego wï¿½zï¿½a mogï¿½ prowadziï¿½ jakieï¿½ krawï¿½dzie do starszych?
+            	weight = initialWeight();
             }
             
         	newNodeWeights.add(weight);
         }
         
-        newNodeWeights.add(0.0); //waga krawï¿½dzi miï¿½dzy dodanym wï¿½zï¿½em a nim samym
+        newNodeWeights.add(0.0); //waga krawêdzi miêdzy dodanym wêz³em a nim samym
         
         graph.add(newNodeWeights);
         
@@ -124,57 +98,9 @@ public class Graph {
         nodes.add(newNode);
         return nodes.size() - 1;    	
     }
-
-    /*public int getNodeIndex(Node node)
-    {
-        Iterator<Node> iter = nodes.iterator();
-        Node current;
-        int result = 0;
-
-        while(iter.hasNext())
-        {
-            //todo: searching node and return index if find
-        	current = iter.next();
-        	if(current.equals(node))
-        	{
-        		return result;
-        	}
-        	result++;
-        }
-
-        addNode(node);
-        result++; //zamiast nodes.size() czy teï¿½ size - 1
-        return result;
-    }*/
-
-    /*EdgeDirection areNeighbours(Node first, Node second)
-    {
-        //todo: searching if nodes are neighbours
-        return EdgeDirection.None;
-    }*/
-    
+  
     private boolean isSuccessorOf(Node first, Node second, SudokuBoard input)
     {
-    	/*ArrayList<Move> predMoves = predecessor.getMoves();
-    	ArrayList<Move> succMoves = successor.getMoves();
-    	int predLength = predMoves.size();
-    	int succLength = succMoves.size();
-    	if(succLength - predLength != 1)
-    	{
-    		return false;
-    	}
-    	
-    	for(int i = 0; i < predLength; i++)
-    	{
-    		Move p = predMoves.get(i);
-    		Move s = succMoves.get(i);
-    		if(!p.equalTo(s))
-    		{
-    			return false;
-    		}
-    	}
-    	//rï¿½niï¿½ siï¿½ tylko jednym, ostatnim elementem
-    	return true;*/
     	int[][] firstBoard = first.recreateBoard(input);
     	int[][] secondBoard = second.recreateBoard(input);
     	int diffs = 0;

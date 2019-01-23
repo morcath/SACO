@@ -12,16 +12,15 @@ public class Node {
 
     public Node(ArrayList<Move> previousMoves, SudokuBoard firstBoard)
     {
-        //moves = previousMoves; //TODO: kopiowaï¿½?
-    	int previousSize = previousMoves.size();
+        int previousSize = previousMoves.size();
     	moves = new ArrayList<Move>(previousSize + 1);
     	for(int i = 0; i < previousSize; i++)
     	{
-    		moves.add(previousMoves.get(i)); //obiekty klasy Move nie sï¿½ kopiowane, tylko przepisywane referencje,
-    		//bo i tak same nie bï¿½dï¿½ z niczym porï¿½wnywane, nie ma co ich mnoï¿½yï¿½    		
+    		moves.add(previousMoves.get(i)); //obiekty klasy Move nie s¹ kopiowane, tylko przepisywane referencje,
+    		//bo i tak same nie bêd¹ z niczym porównywane, nie ma co ich mno¿yæ    		
     	}
     	
-        hash = makeHash(firstBoard); //TODO: tutaj robimy hash z poprzedniej wersji planszy, nowego ruchu jeszcze nie ma!
+        hash = makeHash(firstBoard);
     }
 
     void addMove(Move nextMove, SudokuBoard firstBoard)
@@ -61,7 +60,7 @@ public class Node {
 
     public int[][] recreateBoard(SudokuBoard firstBoard)
     {
-        int[][] board = new int[9][9];//kopia zamiast przepisywania referencji
+        int[][] board = new int[9][9];
         int tmp1, tmp2;
         Iterator<Move> iter = moves.iterator();
         
@@ -117,9 +116,7 @@ public class Node {
             }
         }
 
-
     	return result;
-    	//return other.hash == this.hash; //TODO: a moï¿½e zamiast hashy sprawdzaï¿½ jednak sekwencjï¿½ ruchï¿½w?
     }
     
     public ArrayList<Move> getMoves()

@@ -1,12 +1,11 @@
 package wmh.project;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Collections;
 
 public class SACO {
     private SudokuBoard inputBoard;
-    private double alpha; //?
+    private double alpha;
     private double rho;
     private int antsNum;
     private int maxIterations;
@@ -16,7 +15,7 @@ public class SACO {
     private String filename;
     private boolean end = false;
     private Graph graph = new Graph();
-    private Ant[] ants;// = new Ant[antsNum];
+    private Ant[] ants;
     private ArrayList<Path> paths = new ArrayList<Path>();
     private Path bestSolution;
 
@@ -31,7 +30,6 @@ public class SACO {
         epsilon = _epsilon;
         p =_p;
         level = _level;
-        //graph = new Graph(/*level*/);
         filename = _filename;
         
     }
@@ -84,7 +82,7 @@ public class SACO {
     public void execute()
     {
         InputReader input = new InputReader();
-        /*SudokuBoard sudokuBoard*/inputBoard = input.readBoard(filename, level);
+        inputBoard = input.readBoard(filename, level);
 
         //sudokuBoard.displayBoard();
 
@@ -99,16 +97,15 @@ public class SACO {
             ants[i] = new Ant();
 
         
-        //System.out.println(graph.getNodeIndex(initialNode));
         int loop = 0;
         // main loop
         while(!end)
         {
-            System.out.println(loop);
+            System.out.println("Iteracja algorytmu: " + loop);
             loop++;
             // construct path for each ant
             for (int i = 0; i < antsNum; ++i)
-                addNewPath(ants[i].buildPath(alpha, graph, inputBoard/*timestep*/));
+                addNewPath(ants[i].buildPath(alpha, graph, inputBoard));
 
             //pheromone evaporation
             reducePheromone();
@@ -118,19 +115,20 @@ public class SACO {
                 ants[i].updatePheromone(graph, timestep);
 
             timestep += 1;
-            //obsï¿½uga warunkï¿½w zakoï¿½czenia
+            
+            //obs³uga warunków zakoñczenia
             //przekroczenie maksymalnej liczby iteracji
             if(timestep >= maxIterations)
             {
             	System.out.println("Warunek stopu: przekroczenie maksymalnej liczby iteracji");
             	end = true;
-            	continue; //albo po prostu break i juï¿½
+            	continue;
             }            
             
-            //wiï¿½kszoï¿½ï¿½ mrï¿½wek podï¿½ï¿½a tï¿½ samï¿½ ï¿½cieï¿½kï¿½
+            //wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹
             if(!end && p > 0.5)
             {
-            	//ï¿½cieï¿½ki wyznaczone przez wszystkie mrï¿½wki w bieï¿½ï¿½cej iteracji
+            	//œcie¿ki wyznaczone przez wszystkie mrówki w bie¿¹cej iteracji
 	            ArrayList<Path> currentPaths = new ArrayList<Path>(antsNum);
 	            for(int i = 0; i < antsNum; i++)
 	            {
@@ -142,20 +140,20 @@ public class SACO {
 	            	double frequency = Collections.frequency(currentPaths, currentPaths.get(i));
 	            	if(frequency >= p * antsNum)
 	            	{
-	            		System.out.println("Warunek stopu: wiï¿½kszoï¿½ï¿½ mrï¿½wek podï¿½ï¿½a tï¿½ samï¿½ ï¿½cieï¿½kï¿½");
+	            		System.out.println("Warunek stopu: wiêkszoœæ mrówek pod¹¿a t¹ sam¹ œcie¿k¹");
 	            		end = true;
 	            		break;
 	            	}
 	            }
             }
             
-            //znaleziono akceptowalne rozwiï¿½zanie
+            //znaleziono akceptowalne rozwi¹zanie
             if(!end && epsilon > 0)
             {
             	for(Path path: paths)
                 if(path.evaluationFunction() < epsilon)
                 {
-                	System.out.println("Warunek stopu: znaleziono akceptowalne rozwiï¿½zanie");
+                	System.out.println("Warunek stopu: znaleziono akceptowalne rozwi¹zanie");
                 	end = true;
                     break;
                 }

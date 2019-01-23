@@ -9,8 +9,6 @@ public class SudokuBoard
 {
     private int[][] inputBoard;
     private boolean[][] mask = new boolean[9][9];
-    //private Pair<Integer, Integer> forbiddenFields;//TODO po co?
-    //private Pair<Integer, Integer> allowedFields;//po co?
     private ArrayList<Pair<Integer, Integer>> emptyFields = new ArrayList<Pair<Integer, Integer>>();
     private int[] startNumbers = {0,0,0,0,0,0,0,0,0};
     private int[][] firstBoard = new int[9][9];
@@ -66,7 +64,7 @@ public class SudokuBoard
 
     private int generateDigit(int x, int y)
     {
-        Random generator = new Random(/*12345*/);
+        Random generator = new Random();
         int result;
 
         if(mask[x][y])
@@ -84,22 +82,9 @@ public class SudokuBoard
     }
 
     //czy jest rozwi¹zane
-    public boolean isSolved(Node currentNode/*, Move nextMove*/)
+    public boolean isSolved(Node currentNode)
     {
         int[][] currentBoard = currentNode.recreateBoard(this);
-        /*int[][] boardAfterNextMove = new int[9][9];
-        
-        for(int i = 0; i < 9; i++)
-        {
-        	for(int j = 0; j < 9; j++)
-        	{
-        		boardAfterNextMove[i][j] = currentBoard[i][j];
-        	}
-        } 
-        int tmp1 = boardAfterNextMove[nextMove.rowFrom][nextMove.colFrom];
-        int tmp2 = boardAfterNextMove[nextMove.rowTo][nextMove.colTo];
-        boardAfterNextMove[nextMove.rowTo][nextMove.colTo] = tmp1;
-        boardAfterNextMove[nextMove.rowFrom][nextMove.colFrom] = tmp2;*/
         
         //sprawdzenie elementów w wierszu
         for(int i = 0; i < 9; i++)
@@ -155,10 +140,6 @@ public class SudokuBoard
         return true;
     }
 
-    /*public Pair<Integer, Integer> getAllowedFields() {
-        return allowedFields;
-    }*/
-    
     public ArrayList<Pair<Integer, Integer>> getEmptyFields()
     {
     	return emptyFields;

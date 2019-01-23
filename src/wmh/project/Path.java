@@ -55,6 +55,7 @@ public class Path {
     
     public void display()
     {
+    	System.out.println("D³ugoœæ œcie¿ki: " + length);
     	for(int i = 0; i < nodes.size(); i++)
     	{
     		System.out.print(nodes.get(i) + " ");
